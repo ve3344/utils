@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
 }
 apply from:"publish_library.gradle"
+apply from:"publish_library_jitpack.gradle"
 android {
     compileSdk 30
 
