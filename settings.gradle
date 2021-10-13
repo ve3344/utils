@@ -1,0 +1,16 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+        maven { url 'https://jitpack.io' }
+
+    }
+}
+rootProject.name = "UtilsKt"
+include ':app'
+include ':utils-kt'
+include ':utils-android'
+include ':json-gson'
+include ':json-fastjson'

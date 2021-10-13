@@ -1,0 +1,79 @@
+package me.lwb.utils.android.utils
+
+import android.os.StatFs
+import me.lwb.context.AppContext
+import java.io.File
+
+/**
+ * Created by luowenbin on 2021/9/13.
+ */
+object CacheFileUtils {
+    /**
+     * 确保为目录
+     */
+    private fun File.ensureDir(): File {
+        if (isDirectory) {
+            return this
+        }
+        if (exists() && !delete()) {
+            throw RuntimeException("Can not delete file $path")
+        }
+        if (!mkdir()) {
+            throw RuntimeException("Can not create dir $path")
+        }
+        return this
+    }
+
+    /**
+     * 子缓存目录
+     * @param type 类型
+     */
+    private fun childDir(type: String) = File(cacheDir, type).ensureDir()
+
+    /**
+     * 生成文件名
+     * @param suffix 后缀（如.jpg）
+     */
+    private fun generateFilename(suffix: String) = "tmp_${System.nanoTime()}$suffix"
+
+    /**
+     * 缓存目录
+     */
+    val cacheDir: File
+        get() = (AppContext.context.externalCacheDir ?: AppContext.context.cacheDir).ensureDir()
+
+
+    /**
+     * 创建缓存文件
+     * @param suffix 后缀（如.jpg）
+     */
+    fun createCacheFile(suffix: String) = File(cacheDir, generateFilename(suffix))
+
+    /**
+     * 创建缓存文件
+     * @param type 类型
+     * @param suffix 后缀（如.jpg）
+     */
+    fun createCacheFile(type: String, suffix: String) =
+        File(childDir(type), generateFilename(suffix))
+
+    /**
+     * 清除缓存文件
+     */
+    fun cleanCacheFile() = cacheDir.deleteRecursively()
+
+    /**
+     * 判断文件是否App私有存储
+     * @param file 文件
+     */
+    fun isInternalFile(file: File): Boolean {
+        val appInternalDir = AppContext.context.cacheDir.parentFile ?: return false
+        return file.absolutePath.startsWith(appInternalDir.absolutePath)
+    }
+
+    /**
+     * 缓存文件大小
+     */
+    val cacheSizeBytes
+        get() = StatFs(cacheDir.absolutePath).totalBytes
+}
