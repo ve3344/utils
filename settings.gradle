@@ -12,5 +12,3 @@ rootProject.name = "UtilsKt"
 include ':app'
 include ':utils-kt'
 include ':utils-android'
-include ':json-gson'
-include ':json-fastjson'

@@ -1,47 +1,50 @@
-# kotlin工具库 & Android工具库
+# 轻量 kotlin工具库 & Android工具库
+[![](https://jitpack.io/v/ve3344/utils.svg)](https://jitpack.io/#ve3344/utils)
 
-# Installation
+# 安装
 
-#### Stpe1. add repository
+#### 添加仓库
 
 ```groovy
 //in build.gradle(Project)
 allprojects {
     repositories {
-        maven { url "https://gitee.com/ve3344/repo/raw/master/" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
-// or settings.gradle
+// 新版方式 settings.gradle
 dependencyResolutionManagement {
     repositories {
-        maven { url "https://gitee.com/ve3344/repo/raw/master/" }
+        maven { url 'https://jitpack.io' }
     }
 }
 ```
 
-#### Stpe2. add dependency
+#### 添加依赖
 
 ```groovy
 //in build.gradle(module)
 dependencies {
-    implementation "me.lwb:utils-kt:1.3.0"
-    implementation "me.lwb:utils-android:1.3.0"
+    //kotlin utils
+    implementation "com.github.ve3344.utils:utils-kt:<latest-version>"
+    //android utils
+    implementation "com.github.ve3344.utils:utils-android:<latest-version>"
 }
 ```
 
-# Example
+# 示例
 
-## Kotlin extension
+## Kotlin 工具
 
-BooleanExt
+Boolean 三目运算
 
 ```kotlin
     //like ?:
 val result = (input == "hello").map("yes", "no")
 ```
 
-FileExt
+- File 拓展
 
 ```kotlin
 File("cache").ensureDir()
@@ -50,7 +53,7 @@ File("cache").createFileIfNotExists()
 File("cache").length().bytes2kb
 ```
 
-ProcessExt
+- Process 拓展
 
 ```kotlin
  Runtime.getRuntime().exec("ls").use {
@@ -58,7 +61,7 @@ ProcessExt
 }
 ```
 
-MessageDigestExt
+- 消息摘要工具
 
 ```kotlin
 ByteArray(5).md5()
@@ -67,9 +70,11 @@ ByteArray(5).sha256()
 ByteArray(5).hex()
 ```
 
-## Android extension
+...
 
-SystemServiceExt
+## Android 工具
+
+- 快速获取 SystemService
 
 ```kotlin
 val wm = wifiManager
@@ -78,13 +83,18 @@ val am = audioManager
 
 ```
 
+- 快速监听activity等的destroy事件
+- 快速toast工具
 ```kotlin
 doOnDestroy {
     toast("activity destroy")
 }
 ```
 
-ToastExt ActivityExt SystemServiceExt
+
+registerReceiver拓展
+
+startActivity拓展
 
 ```kotlin
 registerReceiver(
@@ -103,20 +113,20 @@ startActivity<XXActivity> {
 }
 ```
 
-ApkUtils
+Apk 安装
 
 ```kotlin
 ApkUtils.installApk(appContext, apkPath)
 ```
 
-UriUtils
+Uri和path相互转换
 
 ```kotlin
 File("test").androidUri().targetPath()
 UriUtils.fromAsset("a/b.txt")
 ```
 
-SpannableUtils
+快速创建 SpannableString
 
 ```kotlin
 with(findViewById<TextView>(R.id.text)) {
@@ -130,7 +140,11 @@ with(findViewById<TextView>(R.id.text)) {
 }
 ```
 
-ViewExt
+点击事件消抖 
+
+双击退出
+
+验证码倒计时
 
 ```kotlin
 val time = AtomicInteger()
