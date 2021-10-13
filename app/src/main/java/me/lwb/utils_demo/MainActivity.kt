@@ -8,8 +8,6 @@ import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import me.lwb.context.ContextHolder
-import me.lwb.json.Json
-import me.lwb.json.toPrettyJson
 import me.lwb.utils.android.ext.*
 import me.lwb.utils.android.utils.SpannableUtils
 import java.util.concurrent.atomic.AtomicInteger
@@ -19,26 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val person = Json.obj {
-            "name" to "haa"
-            "lessons" to array(
-                obj {
-                    "name" to "math"
-                    "scope" to 99
-                },
-                obj {
-                    "name" to "art"
-                    "scope" to 96
-                },
-                obj {
-                    "name" to "music"
-                    "scope" to 92
-                },
-            )
-            "age" to 14
-
-        }
-        Log.d(TAG, "onCreate: " + Json.toPretty(person).toPrettyJson())
 
         ContextHolder.contextInternal = this
         val time = AtomicInteger()
