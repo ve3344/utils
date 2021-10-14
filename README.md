@@ -37,7 +37,7 @@ dependencies {
 
 ## Kotlin 工具
 
-Boolean 三目运算
+- Boolean 三目运算
 
 ```kotlin
     //like ?:
@@ -92,9 +92,9 @@ doOnDestroy {
 ```
 
 
-registerReceiver拓展
+- registerReceiver拓展
 
-startActivity拓展
+- startActivity拓展
 
 ```kotlin
 registerReceiver(
@@ -113,20 +113,20 @@ startActivity<XXActivity> {
 }
 ```
 
-Apk 安装
+- Apk 安装
 
 ```kotlin
 ApkUtils.installApk(appContext, apkPath)
 ```
 
-Uri和path相互转换
+- Uri和path相互转换
 
 ```kotlin
 File("test").androidUri().targetPath()
 UriUtils.fromAsset("a/b.txt")
 ```
 
-快速创建 SpannableString
+- 快速创建 SpannableString
 
 ```kotlin
 with(findViewById<TextView>(R.id.text)) {
@@ -140,11 +140,11 @@ with(findViewById<TextView>(R.id.text)) {
 }
 ```
 
-点击事件消抖 
+- 点击事件消抖 
 
-双击退出
+- 双击退出
 
-验证码倒计时
+- 验证码倒计时
 
 ```kotlin
 val time = AtomicInteger()
