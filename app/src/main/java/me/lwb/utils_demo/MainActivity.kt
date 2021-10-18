@@ -1,17 +1,10 @@
 package me.lwb.utils_demo
 
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.text.method.LinkMovementMethod
-import android.util.Log
-import android.widget.LinearLayout
-import android.widget.TextView
 //import me.lwb.context.ContextHolder
 //import me.lwb.utils.android.ext.*
 //import me.lwb.utils.android.utils.SpannableUtils
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.system.exitProcess
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
