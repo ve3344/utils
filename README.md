@@ -27,9 +27,9 @@ dependencyResolutionManagement {
 //in build.gradle(module)
 dependencies {
     //kotlin utils
-    implementation "com.github.ve3344.utils:utils-kt:1.6.0"
+    implementation "com.github.ve3344.utils:utils-kt:1.6.1"
     //android utils
-    implementation "com.github.ve3344.utils:utils-android:1.6.0"
+    implementation "com.github.ve3344.utils:utils-android:1.6.1"
 }
 ```
 
