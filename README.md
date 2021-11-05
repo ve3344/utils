@@ -27,9 +27,9 @@ dependencyResolutionManagement {
 //in build.gradle(module)
 dependencies {
     //kotlin utils
-    implementation "com.github.ve3344.utils:utils-kt:1.6.1"
+    implementation "com.github.ve3344.utils:utils-kt:1.5.0"
     //android utils
-    implementation "com.github.ve3344.utils:utils-android:1.6.1"
+    implementation "com.github.ve3344.utils:utils-android:1.7.0"
 }
 ```
 
@@ -122,7 +122,7 @@ ApkUtils.installApk(appContext, apkPath)
 - Uri和path相互转换
 
 ```kotlin
-File("test").androidUri().targetPath()
+File("test").androidUri().toPath()
 UriUtils.fromAsset("a/b.txt")
 ```
 
@@ -173,10 +173,6 @@ btn.configLayoutParams<LinearLayout.LayoutParams> {
 //config LayoutParams
 ```
 
-# ChangeLog
-v1.6.1 添加LocaleUtils、Logger、PreferencesExt、SystemUtils
-v1.6.0 去除 LifecycleOwnerContextExt.kt,添加 ResourcesExt
-v1.5.0 初始版本
 
 
 # License

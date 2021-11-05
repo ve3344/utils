@@ -14,7 +14,7 @@ object UriUtils {
         get() = ContextUtils.packageName
     private const val RESOURCE_URI_PREFIX = ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
 
-    private const val ASSET_URI_PREFIX = ContentResolver.SCHEME_FILE + "file://" + "/android_asset/"
+    private const val ASSET_URI_PREFIX = ContentResolver.SCHEME_FILE + "://" + "/android_asset/"
 
     /**
      * uri是否属于Resource

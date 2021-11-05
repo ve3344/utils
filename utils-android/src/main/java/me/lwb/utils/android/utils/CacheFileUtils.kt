@@ -3,6 +3,7 @@ package me.lwb.utils.android.utils
 import android.os.StatFs
 import me.lwb.context.AppContext
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Created by luowenbin on 2021/9/13.
@@ -34,7 +35,9 @@ object CacheFileUtils {
      * 生成文件名
      * @param suffix 后缀（如.jpg）
      */
-    private fun generateFilename(suffix: String) = "tmp_${System.nanoTime()}$suffix"
+    private fun generateFilename(suffix: String): String {
+        return uniqueIdentifier+suffix
+    }
 
     /**
      * 缓存目录
@@ -76,4 +79,9 @@ object CacheFileUtils {
      */
     val cacheSizeBytes
         get() = StatFs(cacheDir.absolutePath).totalBytes
+
+    private val increasingFlag = AtomicInteger()
+    private val uniqueIdentifier get() = "${System.nanoTime()}${increasingFlag.getAndIncrement()}"
+
+
 }

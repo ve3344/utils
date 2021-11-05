@@ -12,14 +12,10 @@ import android.view.ViewGroup
  * @param gone 使用gone方式，or invisible
  */
 fun ViewGroup.showChildOnly(gone: Boolean = true, predicate: (child: View) -> Boolean) {
-    val hideVisibility = if (gone) View.GONE else View.INVISIBLE
+    val hidden = if (gone) View.GONE else View.INVISIBLE
     for (i in 0 until childCount) {
         val child = getChildAt(i)
-        if (predicate(child)) {
-            child.visibility = View.VISIBLE
-        } else {
-            child.visibility = hideVisibility
-        }
+        child.visibility = if (predicate(child)) View.VISIBLE else hidden
     }
 }
 /**

@@ -12,10 +12,9 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import me.lwb.context.AppContext
 import me.lwb.utils.android.ext.packageInfo
-import android.content.pm.PackageInfo
 
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION","UNUSED")
 object ContextUtils {
     private val context
         get() = AppContext.context

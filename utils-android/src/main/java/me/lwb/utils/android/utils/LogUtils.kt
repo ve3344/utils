@@ -2,7 +2,7 @@ package me.lwb.utils.android.utils
 
 import android.util.Log
 import me.lwb.context.AppContext
-import me.lwb.utils.android.utils.Logger.LogHandler
+import me.lwb.utils.android.utils.LogUtils.LogHandler
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,34 +18,35 @@ import java.util.concurrent.Executor
 open class BaseLogger(
     var tag: String = "LOG",
 
-    var level: Logger.Level = Logger.Level.VERBOSE,
+    var level: LogUtils.Level = LogUtils.Level.VERBOSE,
 
-    var logHandler: LogHandler = Logger.AndroidLogHandler
+    var logHandler: LogHandler = LogUtils.AndroidLogHandler
 ) {
     inline fun v(block: () -> Any?) =
-        Logger.log(Logger.Level.VERBOSE, tag, null, block)
+        LogUtils.log(LogUtils.Level.VERBOSE, tag, null, block)
 
     inline fun d(block: () -> Any?) =
-        Logger.log(Logger.Level.DEBUG, tag, null, block)
+        LogUtils.log(LogUtils.Level.DEBUG, tag, null, block)
 
     inline fun i(block: () -> Any?) =
-        Logger.log(Logger.Level.INFO, tag, null, block)
+        LogUtils.log(LogUtils.Level.INFO, tag, null, block)
 
     inline fun w(throwable: Throwable? = null, block: () -> Any?) =
-        Logger.log(Logger.Level.WARNING, tag, throwable, block)
+        LogUtils.log(LogUtils.Level.WARNING, tag, throwable, block)
 
     inline fun e(throwable: Throwable? = null, block: () -> Any?) =
-        Logger.log(Logger.Level.ERROR, tag, throwable, block)
+        LogUtils.log(LogUtils.Level.ERROR, tag, throwable, block)
 
     inline fun wtf(throwable: Throwable? = null, block: () -> Any?) =
-        Logger.log(Logger.Level.WTF, tag, throwable, block)
+        LogUtils.log(LogUtils.Level.WTF, tag, throwable, block)
 
-    operator fun get(tag: String) = BaseLogger("${this.tag}-$tag", level, logHandler)
+    operator fun get(childTag: String) = BaseLogger("${this.tag}-$childTag", level, logHandler)
 }
+
 /**
  * 全局日志
  */
-object Logger : BaseLogger() {
+object LogUtils : BaseLogger() {
 
     fun interface LogHandler {
         fun log(
@@ -99,6 +100,29 @@ object Logger : BaseLogger() {
             other.log(level, tag, messageAny, throwable)
         }
 
+    /**
+     * 日志过滤
+     */
+    fun LogHandler.filter(
+        predicate: (
+            level: Level,
+            tag: String,
+            messageAny: Any?,
+            throwable: Throwable?
+        ) -> Boolean
+    ) =
+        LogHandler { level, tag, messageAny, throwable ->
+            if (predicate(level, tag, messageAny, throwable)) {
+                this@filter.log(level, tag, messageAny, throwable)
+            }
+        }
+
+    /**
+     * 日志过滤
+     */
+    fun LogHandler.filterLevel(minLevel: Level) =
+        filter { level, tag, messageAny, throwable -> level >= minLevel }
+
     //--------------------------
     /**
      * Android日志记录器
@@ -122,6 +146,7 @@ object Logger : BaseLogger() {
         }
 
     }
+
     /**
      * Csv文件日志记录器
      */
@@ -157,7 +182,7 @@ object Logger : BaseLogger() {
             }
         }
 
-        private fun StringBuilder.appendItem(format: String, vararg args: Any?) {
+        private fun StringBuilder.appendItem(format: String, vararg args: Any) {
             append(",")
             append(String.format(format, *args))
         }

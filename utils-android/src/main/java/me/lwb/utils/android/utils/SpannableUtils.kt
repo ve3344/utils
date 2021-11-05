@@ -13,6 +13,7 @@ import java.util.*
 /**
  * Created by luowenbin on 2021/9/30.
  */
+@Suppress("UNUSED")
 object SpannableUtils {
     private const val SPAN_MODE = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 
