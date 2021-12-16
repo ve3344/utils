@@ -61,6 +61,20 @@ object CacheFileUtils {
         File(childDir(type), generateFilename(suffix))
 
     /**
+     * 创建缓存文件
+     * @param type 类型
+     * @param suffix 后缀（如.jpg）
+     */
+    fun cacheFile(type: String, name: String) =
+        File(childDir(type), name)
+    /**
+     * 缓存目录
+     * @param type 类型
+     */
+    fun cacheDir(type: String) =
+        childDir(type)
+
+    /**
      * 清除缓存文件
      */
     fun cleanCacheFile() = cacheDir.deleteRecursively()

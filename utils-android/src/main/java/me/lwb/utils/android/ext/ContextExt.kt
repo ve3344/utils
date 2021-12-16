@@ -10,10 +10,8 @@ import android.content.pm.PackageInfo
 import android.content.res.Configuration
 import android.graphics.Point
 import android.util.Size
-import android.view.Gravity
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 /**
  * 启动Activity
@@ -35,7 +33,9 @@ inline fun <reified A : Activity> Context.startActivity(
     startActivity(Intent(this, cls).apply(configIntent))
 }
 
-
+inline fun <reified A : Activity> Fragment.startActivity(configIntent: Intent.() -> Unit = {}) {
+    startActivity(Intent(context, A::class.java).apply(configIntent))
+}
 /**
  * 启动 ForegroundService
  * @param configIntent intent 配置器
