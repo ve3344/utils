@@ -3,7 +3,6 @@
 package me.lwb.utils.android.ext
 
 import android.os.CountDownTimer
-import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import kotlin.coroutines.resume

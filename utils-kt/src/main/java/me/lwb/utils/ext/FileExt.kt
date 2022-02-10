@@ -3,7 +3,6 @@
 package me.lwb.utils.ext
 
 import java.io.File
-import kotlin.jvm.Throws
 
 /**
  * Created by luowenbin on 2021/10/8.
@@ -77,3 +76,9 @@ fun File.deleteQuietly() = kotlin.runCatching { delete() }.isSuccess
  * @return 拼接后的文件
  */
 operator fun File.div(child: String) = File(this, child)
+
+/**
+ * 列出子文件
+ * @return 子文件
+ */
+fun File.children(): Array<File> = listFiles() ?: emptyArray()

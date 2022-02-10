@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE","UNUSED")
 package me.lwb.utils.ext
 /**
  * Created by luowenbin on 2021/10/8.

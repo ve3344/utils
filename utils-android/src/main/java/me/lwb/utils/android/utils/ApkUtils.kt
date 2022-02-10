@@ -8,9 +8,9 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.os.Build
 import androidx.annotation.RequiresPermission
-import me.lwb.context.AppContext
-import me.lwb.utils.android.ext.activityManager
+import me.lwb.utils.android.UtilsContext
 import me.lwb.utils.android.ext.setDataAndType
+import me.lwb.utils.android.ext.activityManager
 import java.io.File
 @SuppressLint("InlinedApi")
 @Suppress("DEPRECATION","UNUSED")
@@ -44,7 +44,7 @@ object ApkUtils {
      * @param apkPath apk路径
      */
     fun getApkInfo(apkPath: String): PackageInfo? {
-        return AppContext.context.packageManager.getPackageArchiveInfo(apkPath, 0)
+        return UtilsContext.context.packageManager.getPackageArchiveInfo(apkPath, 0)
     }
 
     /**
@@ -52,7 +52,7 @@ object ApkUtils {
      * @param packageName 目标app 包名
      */
     fun isAppOnForeground(packageName: String = ContextUtils.packageName): Boolean {
-        val processes = AppContext.context.activityManager.runningAppProcesses ?: return false
+        val processes = UtilsContext.context.activityManager().runningAppProcesses ?: return false
         return processes.any { it.importance < RunningAppProcessInfo.IMPORTANCE_BACKGROUND && it.processName == packageName }
     }
 }

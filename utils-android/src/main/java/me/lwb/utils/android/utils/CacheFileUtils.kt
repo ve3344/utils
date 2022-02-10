@@ -1,7 +1,7 @@
 package me.lwb.utils.android.utils
 
 import android.os.StatFs
-import me.lwb.context.AppContext
+import me.lwb.utils.android.UtilsContext
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -36,14 +36,14 @@ object CacheFileUtils {
      * @param suffix 后缀（如.jpg）
      */
     private fun generateFilename(suffix: String): String {
-        return uniqueIdentifier+suffix
+        return uniqueIdentifier +suffix
     }
 
     /**
      * 缓存目录
      */
     val cacheDir: File
-        get() = (AppContext.context.externalCacheDir ?: AppContext.context.cacheDir).ensureDir()
+        get() = (UtilsContext.context.externalCacheDir ?: UtilsContext.context.cacheDir).ensureDir()
 
 
     /**
@@ -61,12 +61,13 @@ object CacheFileUtils {
         File(childDir(type), generateFilename(suffix))
 
     /**
-     * 创建缓存文件
+     * 获取缓存文件
      * @param type 类型
-     * @param suffix 后缀（如.jpg）
+     * @param name 文件名
      */
     fun cacheFile(type: String, name: String) =
         File(childDir(type), name)
+
     /**
      * 缓存目录
      * @param type 类型
@@ -84,7 +85,7 @@ object CacheFileUtils {
      * @param file 文件
      */
     fun isInternalFile(file: File): Boolean {
-        val appInternalDir = AppContext.context.cacheDir.parentFile ?: return false
+        val appInternalDir = UtilsContext.context.cacheDir.parentFile ?: return false
         return file.absolutePath.startsWith(appInternalDir.absolutePath)
     }
 

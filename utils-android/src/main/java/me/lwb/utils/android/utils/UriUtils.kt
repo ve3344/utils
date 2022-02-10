@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RawRes
 import androidx.core.content.FileProvider
-import me.lwb.context.AppContext
+import me.lwb.utils.android.UtilsContext
 import java.io.File
 
 
@@ -77,7 +77,7 @@ object UriUtils {
  */
 fun File.androidUri(): Uri
     = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        FileProvider.getUriForFile(AppContext.context, UriUtils.authority, this)
+        FileProvider.getUriForFile(UtilsContext.context, UriUtils.authority, this)
     } else {
         Uri.fromFile(this)
     }

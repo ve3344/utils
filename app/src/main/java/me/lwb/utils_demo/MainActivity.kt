@@ -5,12 +5,17 @@ package me.lwb.utils_demo
 //import me.lwb.utils.android.utils.SpannableUtils
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import me.lwb.utils.android.UtilsContext
+import me.lwb.utils.android.ext.doOnBackPressedTwice
+import me.lwb.utils.android.ext.toast
+import me.lwb.utils.utils.LogUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        doOnBackPressedTwice(onBackPressFirst = { toast("Click again to exit") })
+        LogUtils.i { "Context ${UtilsContext.context}" }
 //
 //        ContextHolder.contextInternal = this
 //        val time = AtomicInteger()

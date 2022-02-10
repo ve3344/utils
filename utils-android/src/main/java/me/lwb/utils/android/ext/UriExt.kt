@@ -1,5 +1,4 @@
 @file:Suppress("DEPRECATION")
-
 package me.lwb.utils.android.ext
 
 import android.content.ContentResolver
@@ -11,7 +10,7 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import me.lwb.context.AppContext
+import me.lwb.utils.android.UtilsContext
 import me.lwb.utils.android.utils.CacheFileUtils
 import java.io.File
 import java.io.FileOutputStream
@@ -45,24 +44,24 @@ val Uri.isHuaweiUri
 /**
  * 根据uri获取路径
  */
-fun Uri.toPath() =
+fun Uri.toPath(): String? =
     getFilePath() ?: getDocumentPath() ?: getDownloadPath() ?: getMediaPath() ?: getContentPath()
 
 fun Uri.saveFile(
     file: File = CacheFileUtils.createCacheFile("uri_cache", ".tmp")
 ): File {
     FileOutputStream(file).use { out ->
-        AppContext.context.contentResolver
+        UtilsContext.context.contentResolver
             .openInputStream(this)
             ?.use { it.copyTo(out) }
     }
     return file
 }
 
-private fun Uri.getFilePath() = if (SCHEME_FILE.equals(scheme,true)) path else null
+private fun Uri.getFilePath() = if (SCHEME_FILE.equals(scheme, true)) path else null
 
 private fun Uri.getDocumentPath(): String? {
-    if (!DocumentsContract.isDocumentUri(AppContext.context, this)) {
+    if (!DocumentsContract.isDocumentUri(UtilsContext.context, this)) {
         return null
     }
     val docId = docId() ?: return null
@@ -116,7 +115,7 @@ private fun Uri.queryFile(
         }
     }
 
-    return getDataColumn(AppContext.context, selection, selectionArgs)
+    return getDataColumn(UtilsContext.context, selection, selectionArgs)
 }
 
 /**
@@ -146,7 +145,7 @@ private fun Any.asAnySequence() = sequence<Any?> {
 }
 
 private fun getStoragePath(type: String, id: String): String? {
-    val mStorageManager = AppContext.context.storageManager
+    val mStorageManager = UtilsContext.context.storageManager()
     return runCatching {
         val storageVolumeClazz = Class.forName("android.os.storage.StorageVolume")
         val getVolumeList = StorageManager::class.java.getMethod("getVolumeList")
@@ -197,7 +196,7 @@ private fun Uri.getMediaPath(): String? {
 }
 
 private fun Uri.getContentPath(): String? {
-    if (ContentResolver.SCHEME_CONTENT.equals(scheme,true)) {
+    if (ContentResolver.SCHEME_CONTENT.equals(scheme, true)) {
         return null
     }
     return queryFile()

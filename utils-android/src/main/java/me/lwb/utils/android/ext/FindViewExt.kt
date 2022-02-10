@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.view.View
 import android.widget.PopupWindow
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 
 /**
@@ -17,6 +18,7 @@ fun <T : View> View.viewById(id: Int) = lazy(LazyThreadSafetyMode.NONE) {
 fun <T : View> Dialog.viewById(id: Int) = lazy(LazyThreadSafetyMode.NONE) {
     findViewById<T>(id)
 }
+
 
 fun <T : View> Activity.viewById(id: Int) = lazy(LazyThreadSafetyMode.NONE) {
     findViewById<T>(id)

@@ -4,12 +4,13 @@ import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore.Images.Media
 import androidx.annotation.RequiresPermission
-import me.lwb.context.AppContext
+import me.lwb.utils.android.UtilsContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -68,7 +69,7 @@ object SaveImageUtils {
     @Suppress("DEPRECATION")
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun saveImage(bitmap: Bitmap, options: Options = Options()): Boolean {
-        val resolver = AppContext.context.contentResolver
+        val resolver = UtilsContext.context.contentResolver
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
@@ -112,7 +113,7 @@ object SaveImageUtils {
                 put(Media.DATA, file.absolutePath)
             }
             resolver.insert(Media.EXTERNAL_CONTENT_URI, values)
-            AppContext.context.sendBroadcast(
+            UtilsContext.context.sendBroadcast(
                 Intent(
                     Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                     Uri.fromFile(file)
@@ -125,8 +126,8 @@ object SaveImageUtils {
 
     private fun contentValues(block: ContentValues.() -> Unit): ContentValues {
         return ContentValues().apply {
-            put(Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-            put(Media.DATE_TAKEN, System.currentTimeMillis());
+            put(Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+            put(Media.DATE_TAKEN, System.currentTimeMillis())
         }.apply(block)
     }
 
@@ -143,6 +144,15 @@ object SaveImageUtils {
         }.onFailure { it.printStackTrace() }
             .isSuccess
 
+    }
+
+    @Suppress("DEPRECATION")
+    fun notifySaveMedia(path: String) {
+        val context = UtilsContext.context
+        MediaScannerConnection.scanFile(context, arrayOf(path), null, null)
+        val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        intent.data = Uri.fromFile(File(path))
+        context.sendBroadcast(intent)
     }
 
 }

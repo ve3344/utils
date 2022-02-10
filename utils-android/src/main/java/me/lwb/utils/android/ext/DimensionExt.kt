@@ -3,10 +3,10 @@
 package me.lwb.utils.android.ext
 
 import android.util.DisplayMetrics
-import me.lwb.context.AppContext
+import me.lwb.utils.android.UtilsContext
 
 private val displayMetrics: DisplayMetrics
-    get() = AppContext.context.resources.displayMetrics
+    get() = UtilsContext.context.resources.displayMetrics
 
 /**
  * dp转px

@@ -1,8 +1,6 @@
-package me.lwb.utils.android.utils
+package me.lwb.utils.utils
 
-import android.util.Log
-import me.lwb.context.AppContext
-import me.lwb.utils.android.utils.LogUtils.LogHandler
+import me.lwb.utils.utils.LogUtils.LogPrinter
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,35 +18,50 @@ open class BaseLogger(
 
     var level: LogUtils.Level = LogUtils.Level.VERBOSE,
 
-    var logHandler: LogHandler = LogUtils.AndroidLogHandler
+    var logPrinter: LogPrinter = LogUtils.ConsoleLogPrinter
 ) {
     inline fun v(block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.VERBOSE, tag, null, block)
+        log(LogUtils.Level.VERBOSE, tag, null, block)
 
     inline fun d(block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.DEBUG, tag, null, block)
+        log(LogUtils.Level.DEBUG, tag, null, block)
 
     inline fun i(block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.INFO, tag, null, block)
+        log(LogUtils.Level.INFO, tag, null, block)
 
     inline fun w(throwable: Throwable? = null, block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.WARNING, tag, throwable, block)
+        log(LogUtils.Level.WARNING, tag, throwable, block)
 
     inline fun e(throwable: Throwable? = null, block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.ERROR, tag, throwable, block)
+        log(LogUtils.Level.ERROR, tag, throwable, block)
 
     inline fun wtf(throwable: Throwable? = null, block: () -> Any?) =
-        LogUtils.log(LogUtils.Level.WTF, tag, throwable, block)
+        log(LogUtils.Level.WTF, tag, throwable, block)
 
-    operator fun get(childTag: String) = BaseLogger("${this.tag}-$childTag", level, logHandler)
+
+    inline fun log(
+        level: LogUtils.Level,
+        tag: String = this.tag,
+        throwable: Throwable? = null,
+        block: () -> Any?
+    ) {
+        if (this.level <= level) {
+            logPrinter.log(level, tag, block(), throwable)
+        }
+    }
+
+    var loggerFactory: (childTag: String) -> BaseLogger =
+        { BaseLogger("${this.tag}-$it", level, logPrinter) }
+
+    operator fun get(childTag: String) = loggerFactory(childTag)
 }
 
 /**
  * 全局日志
  */
-object LogUtils : BaseLogger() {
+object LogUtils : BaseLogger(tag = "LogUtils") {
 
-    fun interface LogHandler {
+    fun interface LogPrinter {
         fun log(
             level: Level,
             tag: String,
@@ -70,22 +83,11 @@ object LogUtils : BaseLogger() {
     }
 
 
-    inline fun log(
-        level: Level,
-        tag: String = this.tag,
-        throwable: Throwable? = null,
-        block: () -> Any?
-    ) {
-        if (this.level <= level) {
-            logHandler.log(level, tag, block(), throwable)
-        }
-    }
-
     /**
      * 设置日志记录线程
      */
-    fun LogHandler.logAt(executor: Executor) =
-        LogHandler { level, tag, messageAny, throwable ->
+    fun LogPrinter.logAt(executor: Executor) =
+        LogPrinter { level, tag, messageAny, throwable ->
             executor.execute {
                 this@logAt.log(level, tag, messageAny, throwable)
             }
@@ -94,8 +96,8 @@ object LogUtils : BaseLogger() {
     /**
      * 添加额外的日志记录器
      */
-    fun LogHandler.logAlso(other: LogHandler) =
-        LogHandler { level, tag, messageAny, throwable ->
+    fun LogPrinter.logAlso(other: LogPrinter) =
+        LogPrinter { level, tag, messageAny, throwable ->
             this@logAlso.log(level, tag, messageAny, throwable)
             other.log(level, tag, messageAny, throwable)
         }
@@ -103,7 +105,7 @@ object LogUtils : BaseLogger() {
     /**
      * 日志过滤
      */
-    fun LogHandler.filter(
+    fun LogPrinter.filter(
         predicate: (
             level: Level,
             tag: String,
@@ -111,7 +113,7 @@ object LogUtils : BaseLogger() {
             throwable: Throwable?
         ) -> Boolean
     ) =
-        LogHandler { level, tag, messageAny, throwable ->
+        LogPrinter { level, tag, messageAny, throwable ->
             if (predicate(level, tag, messageAny, throwable)) {
                 this@filter.log(level, tag, messageAny, throwable)
             }
@@ -120,51 +122,39 @@ object LogUtils : BaseLogger() {
     /**
      * 日志过滤
      */
-    fun LogHandler.filterLevel(minLevel: Level) =
-        filter { level, tag, messageAny, throwable -> level >= minLevel }
+    fun LogPrinter.filterLevel(minLevel: Level) =
+        filter { level, _, _, _ -> level >= minLevel }
 
     //--------------------------
     /**
      * Android日志记录器
      */
-    object AndroidLogHandler : LogHandler {
+    object ConsoleLogPrinter : LogPrinter {
+        private val formatter = CsvLogFormatter()
+
         override fun log(
             level: Level,
             tag: String,
             messageAny: Any?,
             throwable: Throwable?
         ) {
-            val message = messageAny.toString()
-            when (level) {
-                Level.VERBOSE -> Log.v(tag, message, throwable)
-                Level.DEBUG -> Log.d(tag, message, throwable)
-                Level.INFO -> Log.i(tag, message, throwable)
-                Level.WARNING -> Log.w(tag, message, throwable)
-                Level.ERROR -> Log.e(tag, message, throwable)
-                Level.WTF -> Log.wtf(tag, message, throwable)
+            val message = formatter.format(level, tag, messageAny, throwable)
+            val target = when (level) {
+                Level.VERBOSE -> System.out
+                Level.DEBUG -> System.out
+                Level.INFO -> System.out
+                Level.WARNING -> System.err
+                Level.ERROR -> System.err
+                Level.WTF -> System.err
             }
+            target.print(message)
         }
 
     }
 
-    /**
-     * Csv文件日志记录器
-     */
-    class CsvLogHandler constructor(
-        private val provideFile: () -> File = defaultAndroidLogFile(),
-        dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS"
-    ) : LogHandler {
+    class CsvLogFormatter(dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") {
         private val format = SimpleDateFormat(dateFormat, Locale.ENGLISH)
-
-        companion object Utils {
-            fun defaultAndroidLogFile(): () -> File = {
-                File(AppContext.context.getExternalFilesDir("log"), "log${dateNow()}.csv")
-            }
-
-            fun dateNow(): String = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH).format(Date())
-        }
-
-        private fun getCsvLine(
+        fun format(
             level: Level,
             tag: String,
             messageAny: Any?,
@@ -187,6 +177,17 @@ object LogUtils : BaseLogger() {
             append(String.format(format, *args))
         }
 
+    }
+
+    /**
+     * Csv文件日志记录器
+     */
+    class CsvLogPrinter constructor(
+        private val provideFile: () -> File,
+        dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS"
+    ) : LogPrinter {
+        private val formatter = CsvLogFormatter(dateFormat)
+
         override fun log(
             level: Level,
             tag: String,
@@ -194,7 +195,7 @@ object LogUtils : BaseLogger() {
             throwable: Throwable?
         ) {
             kotlin.runCatching {
-                provideFile().appendText(getCsvLine(level, tag, messageAny, throwable))
+                provideFile().appendText(formatter.format(level, tag, messageAny, throwable))
             }.onFailure { it.printStackTrace() }
         }
     }

@@ -128,9 +128,9 @@ fun Activity.showInputMethod(show: Boolean) {
             isFocusableInTouchMode = true
             requestFocus()
         }
-        this.inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+        this.inputMethodManager().showSoftInput(view, InputMethodManager.SHOW_FORCED)
     } else {
-        this.inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        this.inputMethodManager().hideSoftInputFromWindow(view.windowToken, 0)
 
     }
 }

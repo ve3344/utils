@@ -3,16 +3,22 @@
 package me.lwb.utils.android.ext
 
 import android.app.Activity
+import android.app.Application
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.res.Configuration
 import android.graphics.Point
+import android.os.Build
 import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import me.lwb.utils.android.UtilsContext
 
+val application: Application
+    get() = UtilsContext.context
 /**
  * 启动Activity
  * @param configIntent intent 配置器
@@ -74,9 +80,10 @@ fun Context.isLandscape(): Boolean {
  * 显示器大小
  */
 val Context.displaySize: Size
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     get() {
         val point = Point()
-        windowManager.defaultDisplay.getRealSize(point)
+        windowManager().defaultDisplay.getRealSize(point)
         return Size(point.x, point.y)
     }
 
@@ -88,7 +95,7 @@ val Context.displaySize: Size
  * @see android.view.Surface.ROTATION_270
  */
 val Context.displayRotation
-    get() = windowManager.defaultDisplay.rotation
+    get() = windowManager().defaultDisplay.rotation
 
 /**
  * 本App的包信息
